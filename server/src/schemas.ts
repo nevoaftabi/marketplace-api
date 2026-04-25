@@ -44,3 +44,29 @@ export const CreateClaimParams = z.object({
 export const GetTaskClaimParams = z.object({
     id: z.uuid()
 })
+
+export const RefreshTokenSchema = z.object({
+  refreshToken: z.string(),
+});
+
+export const GetTasksSchema = z.object({
+  page: z.coerce.number().min(1).max(10).default(1),
+  limit: z.coerce.number(),
+});
+
+export const AcceptClaimSchema = z.object({
+  id: z.uuid(),
+});
+
+export const RejectClaimSchema = z.object({
+  id: z.uuid(),
+});
+
+export const parseOrThrow = <T>(schema: z.ZodType<T>, data: unknown): T => {
+  const parsed = schema.safeParse(data);
+  if (!parsed.success) {
+    throw parsed.error;
+  }
+
+  return parsed.data;
+};
