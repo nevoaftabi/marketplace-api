@@ -9,6 +9,7 @@ Features
 * Pagination for the /tasks route - you can specify which page and how many results you want
 * Handles malformed JSON
 * Securely stores passwords in the database (hash + salt)
+* Rate limiting 
 
 Technologies used
 * Express - for the API

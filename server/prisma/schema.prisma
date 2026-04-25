@@ -28,6 +28,7 @@ model Claim {
   user User @relation(fields: [userId], references: [id])
   taskId String @unique 
   task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  accepted Boolean @default(false)
 }
 
 model Task {

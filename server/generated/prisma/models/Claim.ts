@@ -28,18 +28,21 @@ export type ClaimMinAggregateOutputType = {
   id: string | null
   userId: string | null
   taskId: string | null
+  accepted: boolean | null
 }
 
 export type ClaimMaxAggregateOutputType = {
   id: string | null
   userId: string | null
   taskId: string | null
+  accepted: boolean | null
 }
 
 export type ClaimCountAggregateOutputType = {
   id: number
   userId: number
   taskId: number
+  accepted: number
   _all: number
 }
 
@@ -48,18 +51,21 @@ export type ClaimMinAggregateInputType = {
   id?: true
   userId?: true
   taskId?: true
+  accepted?: true
 }
 
 export type ClaimMaxAggregateInputType = {
   id?: true
   userId?: true
   taskId?: true
+  accepted?: true
 }
 
 export type ClaimCountAggregateInputType = {
   id?: true
   userId?: true
   taskId?: true
+  accepted?: true
   _all?: true
 }
 
@@ -139,6 +145,7 @@ export type ClaimGroupByOutputType = {
   id: string
   userId: string
   taskId: string
+  accepted: boolean
   _count: ClaimCountAggregateOutputType | null
   _min: ClaimMinAggregateOutputType | null
   _max: ClaimMaxAggregateOutputType | null
@@ -166,6 +173,7 @@ export type ClaimWhereInput = {
   id?: Prisma.StringFilter<"Claim"> | string
   userId?: Prisma.StringFilter<"Claim"> | string
   taskId?: Prisma.StringFilter<"Claim"> | string
+  accepted?: Prisma.BoolFilter<"Claim"> | boolean
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   task?: Prisma.XOR<Prisma.TaskScalarRelationFilter, Prisma.TaskWhereInput>
 }
@@ -174,6 +182,7 @@ export type ClaimOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   taskId?: Prisma.SortOrder
+  accepted?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   task?: Prisma.TaskOrderByWithRelationInput
 }
@@ -185,6 +194,7 @@ export type ClaimWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.ClaimWhereInput[]
   NOT?: Prisma.ClaimWhereInput | Prisma.ClaimWhereInput[]
   userId?: Prisma.StringFilter<"Claim"> | string
+  accepted?: Prisma.BoolFilter<"Claim"> | boolean
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   task?: Prisma.XOR<Prisma.TaskScalarRelationFilter, Prisma.TaskWhereInput>
 }, "id" | "taskId">
@@ -193,6 +203,7 @@ export type ClaimOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   taskId?: Prisma.SortOrder
+  accepted?: Prisma.SortOrder
   _count?: Prisma.ClaimCountOrderByAggregateInput
   _max?: Prisma.ClaimMaxOrderByAggregateInput
   _min?: Prisma.ClaimMinOrderByAggregateInput
@@ -205,10 +216,12 @@ export type ClaimScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Claim"> | string
   userId?: Prisma.StringWithAggregatesFilter<"Claim"> | string
   taskId?: Prisma.StringWithAggregatesFilter<"Claim"> | string
+  accepted?: Prisma.BoolWithAggregatesFilter<"Claim"> | boolean
 }
 
 export type ClaimCreateInput = {
   id?: string
+  accepted?: boolean
   user: Prisma.UserCreateNestedOneWithoutClaimsInput
   task: Prisma.TaskCreateNestedOneWithoutClaimInput
 }
@@ -217,10 +230,12 @@ export type ClaimUncheckedCreateInput = {
   id?: string
   userId: string
   taskId: string
+  accepted?: boolean
 }
 
 export type ClaimUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  accepted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   user?: Prisma.UserUpdateOneRequiredWithoutClaimsNestedInput
   task?: Prisma.TaskUpdateOneRequiredWithoutClaimNestedInput
 }
@@ -229,22 +244,26 @@ export type ClaimUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   taskId?: Prisma.StringFieldUpdateOperationsInput | string
+  accepted?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type ClaimCreateManyInput = {
   id?: string
   userId: string
   taskId: string
+  accepted?: boolean
 }
 
 export type ClaimUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  accepted?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type ClaimUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   taskId?: Prisma.StringFieldUpdateOperationsInput | string
+  accepted?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type ClaimListRelationFilter = {
@@ -261,18 +280,21 @@ export type ClaimCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   taskId?: Prisma.SortOrder
+  accepted?: Prisma.SortOrder
 }
 
 export type ClaimMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   taskId?: Prisma.SortOrder
+  accepted?: Prisma.SortOrder
 }
 
 export type ClaimMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   taskId?: Prisma.SortOrder
+  accepted?: Prisma.SortOrder
 }
 
 export type ClaimNullableScalarRelationFilter = {
@@ -322,6 +344,10 @@ export type ClaimUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.ClaimScalarWhereInput | Prisma.ClaimScalarWhereInput[]
 }
 
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
 export type ClaimCreateNestedOneWithoutTaskInput = {
   create?: Prisma.XOR<Prisma.ClaimCreateWithoutTaskInput, Prisma.ClaimUncheckedCreateWithoutTaskInput>
   connectOrCreate?: Prisma.ClaimCreateOrConnectWithoutTaskInput
@@ -356,12 +382,14 @@ export type ClaimUncheckedUpdateOneWithoutTaskNestedInput = {
 
 export type ClaimCreateWithoutUserInput = {
   id?: string
+  accepted?: boolean
   task: Prisma.TaskCreateNestedOneWithoutClaimInput
 }
 
 export type ClaimUncheckedCreateWithoutUserInput = {
   id?: string
   taskId: string
+  accepted?: boolean
 }
 
 export type ClaimCreateOrConnectWithoutUserInput = {
@@ -397,16 +425,19 @@ export type ClaimScalarWhereInput = {
   id?: Prisma.StringFilter<"Claim"> | string
   userId?: Prisma.StringFilter<"Claim"> | string
   taskId?: Prisma.StringFilter<"Claim"> | string
+  accepted?: Prisma.BoolFilter<"Claim"> | boolean
 }
 
 export type ClaimCreateWithoutTaskInput = {
   id?: string
+  accepted?: boolean
   user: Prisma.UserCreateNestedOneWithoutClaimsInput
 }
 
 export type ClaimUncheckedCreateWithoutTaskInput = {
   id?: string
   userId: string
+  accepted?: boolean
 }
 
 export type ClaimCreateOrConnectWithoutTaskInput = {
@@ -427,32 +458,38 @@ export type ClaimUpdateToOneWithWhereWithoutTaskInput = {
 
 export type ClaimUpdateWithoutTaskInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  accepted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   user?: Prisma.UserUpdateOneRequiredWithoutClaimsNestedInput
 }
 
 export type ClaimUncheckedUpdateWithoutTaskInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  accepted?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type ClaimCreateManyUserInput = {
   id?: string
   taskId: string
+  accepted?: boolean
 }
 
 export type ClaimUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  accepted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   task?: Prisma.TaskUpdateOneRequiredWithoutClaimNestedInput
 }
 
 export type ClaimUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   taskId?: Prisma.StringFieldUpdateOperationsInput | string
+  accepted?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type ClaimUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   taskId?: Prisma.StringFieldUpdateOperationsInput | string
+  accepted?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 
@@ -461,6 +498,7 @@ export type ClaimSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   id?: boolean
   userId?: boolean
   taskId?: boolean
+  accepted?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   task?: boolean | Prisma.TaskDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["claim"]>
@@ -469,6 +507,7 @@ export type ClaimSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   id?: boolean
   userId?: boolean
   taskId?: boolean
+  accepted?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   task?: boolean | Prisma.TaskDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["claim"]>
@@ -477,6 +516,7 @@ export type ClaimSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   id?: boolean
   userId?: boolean
   taskId?: boolean
+  accepted?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   task?: boolean | Prisma.TaskDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["claim"]>
@@ -485,9 +525,10 @@ export type ClaimSelectScalar = {
   id?: boolean
   userId?: boolean
   taskId?: boolean
+  accepted?: boolean
 }
 
-export type ClaimOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "taskId", ExtArgs["result"]["claim"]>
+export type ClaimOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "taskId" | "accepted", ExtArgs["result"]["claim"]>
 export type ClaimInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   task?: boolean | Prisma.TaskDefaultArgs<ExtArgs>
@@ -511,6 +552,7 @@ export type $ClaimPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     id: string
     userId: string
     taskId: string
+    accepted: boolean
   }, ExtArgs["result"]["claim"]>
   composites: {}
 }
@@ -939,6 +981,7 @@ export interface ClaimFieldRefs {
   readonly id: Prisma.FieldRef<"Claim", 'String'>
   readonly userId: Prisma.FieldRef<"Claim", 'String'>
   readonly taskId: Prisma.FieldRef<"Claim", 'String'>
+  readonly accepted: Prisma.FieldRef<"Claim", 'Boolean'>
 }
     
 

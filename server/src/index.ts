@@ -1,3 +1,8 @@
+// TODO:
+// Refactor the code to use parseOrThrow
+// Rate limiting
+// Owner can reject or accept claims
+
 import express, { NextFunction, Request, Response } from "express";
 import { prisma } from "./db";
 import { z, ZodError } from "zod";
@@ -16,6 +21,7 @@ import {
   CreateClaimParams,
   GetTaskClaimParams,
 } from "./schemas.ts";
+import rateLimit from "express-rate-limit";
 
 const app = express();
 
@@ -37,6 +43,15 @@ if (
   throw Error("ERROR: Missing environment variables");
 }
 
+// Tracks how many requests each IP address makes within a time window
+// Once an IP exceeds the limit, it returns a 429 response and blocks further requests until the window resets
+// Each IP gets 100 requests per 15 minutes before getting blocked
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 100,
+});
+
+app.use(limiter);
 app.use(express.json());
 
 app.use("/", (req: Request, res: Response, next: NextFunction) => {
@@ -69,7 +84,7 @@ app.post("/auth/refresh", async (req: Request, res: Response) => {
       },
     );
 
-    return res.status(200).json({accessToken});
+    return res.status(200).json({ accessToken });
   } catch (error) {
     if (error instanceof ZodError) {
       return res.sendStatus(400);
@@ -96,7 +111,6 @@ app.use("/auth", (req: Request, res: Response, next: NextFunction) => {
     next();
   } catch (e) {
     res.sendStatus(401);
-    console.log(e);
   }
 });
 
@@ -105,22 +119,18 @@ app.get("/health", (_, res: Response) => {
 });
 
 app.post("/register", async (req: Request, res: Response) => {
-  const parsed = RegisterSchema.safeParse(req.body);
-
-  if (!parsed.success) {
-    return res.status(400).json(parsed.error.flatten());
-  }
-
-  const hashedPassword = await bcrypt.hash(parsed.data.password, 10);
-
   try {
+    const parsed = parseOrThrow(RegisterSchema, req.body);
+    const hashedPassword = await bcrypt.hash(parsed.password, 10);
     await prisma.user.create({
-      data: { ...parsed.data, password: hashedPassword },
+      data: { ...parsed, password: hashedPassword },
     });
 
     return res.sendStatus(201);
   } catch (e) {
-    console.log(e);
+    if (e instanceof ZodError) {
+      return res.sendStatus(400);
+    }
 
     if (
       e instanceof Prisma.PrismaClientKnownRequestError &&
@@ -138,16 +148,11 @@ const RefreshTokenSchema = z.object({
 });
 
 app.post("/login", async (req: Request, res: Response) => {
-  const parsed = LoginSchema.safeParse(req.body);
-
-  if (!parsed.success) {
-    return res.status(400).json(parsed.error.flatten());
-  }
-
   try {
+    const parsed = parseOrThrow(LoginSchema, req.body);
     const user = await prisma.user.findUnique({
       where: {
-        username: parsed.data?.username,
+        username: parsed.username,
       },
     });
 
@@ -156,7 +161,7 @@ app.post("/login", async (req: Request, res: Response) => {
     }
 
     const passwordMatches = await bcrypt.compare(
-      parsed.data.password,
+      parsed.password,
       user.password,
     );
 
@@ -189,7 +194,9 @@ app.post("/login", async (req: Request, res: Response) => {
 
     return res.status(200).json({ accessToken, refreshToken });
   } catch (e) {
-    console.log(e);
+    if (e instanceof ZodError) {
+      return res.sendStatus(400);
+    }
     return res.sendStatus(500);
   }
 });
@@ -213,7 +220,6 @@ app.get("/tasks", async (req: Request, res: Response) => {
       .status(200)
       .json({ tasks, total, page: parsed.page, limit: parsed.limit });
   } catch (error) {
-    console.log(error);
     if (error instanceof ZodError) {
       return res.sendStatus(400);
     }
@@ -224,17 +230,12 @@ app.get("/tasks", async (req: Request, res: Response) => {
 
 app.post("/auth/tasks", async (req: Request, res: Response) => {
   try {
-    const parsed = CreateTaskBody.safeParse(req.body);
-
-    if (!parsed.success) {
-      return res.status(400).json(parsed.error.flatten());
-    }
-
+    const parsed = parseOrThrow(CreateTaskBody, req.body);
     await prisma.task.create({
       data: {
-        description: parsed.data.description,
-        pay: parsed.data.pay,
-        title: parsed.data.title,
+        description: parsed.description,
+        pay: parsed.pay,
+        title: parsed.title,
 
         // prisma needs a relation to connect
         user: { connect: { id: res.locals.user.id } },
@@ -243,10 +244,61 @@ app.post("/auth/tasks", async (req: Request, res: Response) => {
 
     return res.sendStatus(201);
   } catch (e) {
-    console.log(e);
+    if (e instanceof ZodError) {
+      return res.sendStatus(400);
+    }
     return res.sendStatus(500);
   }
 });
+
+const AcceptClaimSchema = z.object({
+  id: z.uuid(),
+});
+
+app.post(
+  "/auth/tasks/:id/claim/accept",
+  async (req: Request, res: Response) => {
+    try {
+      const parsed = parseOrThrow(AcceptClaimSchema, req.params);
+
+      const task = await prisma.task.findUnique({
+        where: {
+          id: parsed.id,
+          userId: res.locals.user.id
+        }
+      });
+
+      const claim = await prisma.claim.findUnique({ where: { taskId: parsed.id }});
+
+      if(!claim) return res.sendStatus(404);
+      if(claim.accepted) return res.sendStatus(409);
+
+      await prisma.claim.update({
+        where: {
+          taskId: parsed.id,
+        },
+        data: {
+          accepted: true,
+        },
+      });
+
+      return res.sendStatus(200);
+    } catch (error) {
+      if (error instanceof ZodError) {
+        return res.sendStatus(400);
+      }
+
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2025"
+      ) {
+        return res.sendStatus(404);
+      }
+
+      return res.sendStatus(500);
+    }
+  },
+);
 
 app.delete("/auth/tasks/:id", async (req: Request, res: Response) => {
   try {
@@ -261,7 +313,6 @@ app.delete("/auth/tasks/:id", async (req: Request, res: Response) => {
 
     return res.sendStatus(200);
   } catch (error) {
-    console.log(error);
     if (error instanceof ZodError) {
       return res.sendStatus(400);
     }
@@ -290,8 +341,6 @@ app.get("/auth/users", async (req: Request, res: Response) => {
     });
     return res.status(200).json(users);
   } catch (e) {
-    console.log(e);
-
     return res.sendStatus(500);
   }
 });
@@ -307,8 +356,6 @@ app.get("/auth/tasks/:id/claim", async (req: Request, res: Response) => {
 
     return res.status(200).json(claim);
   } catch (error) {
-    console.log(error);
-
     if (error instanceof ZodError) {
       return res.sendStatus(400);
     }
@@ -373,7 +420,6 @@ app.patch("/auth/tasks/:id", async (req: Request, res: Response) => {
 
     return res.sendStatus(200);
   } catch (error) {
-    console.log(error);
     if (error instanceof ZodError) {
       return res.sendStatus(400);
     }
@@ -410,8 +456,6 @@ app.get("/tasks/:id", async (req: Request, res: Response) => {
 
     return res.status(200).json(task);
   } catch (error) {
-    console.log(error);
-
     if (error instanceof ZodError) {
       return res.sendStatus(400);
     }
