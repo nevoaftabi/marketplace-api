@@ -1,3 +1,7 @@
+// Stripe:
+// Customer - a stripe object representing your user. You create one when a user registers or first tries to subscribe
+// Product + price - you define your plans in the stripe dashboard (e.g. basic at $5/month, unlimited at $10/month)
+
 import express, { NextFunction, Request, Response } from "express";
 import { prisma } from "./db.ts";
 import { ZodError } from "zod";
@@ -15,6 +19,7 @@ import {
 } from "./schemas.ts";
 import rateLimit from "express-rate-limit";
 import { authMiddleware, router as authRouter } from "./routes/auth.ts";
+import { Stripe } from "stripe";
 
 const app = express();
 
@@ -24,6 +29,7 @@ const {
   REFRESH_TOKEN_SECRET,
   ACCESS_TOKEN_TTL,
   REFRESH_TOKEN_TTL,
+  STRIPE_SECRET_KEY,
 } = process.env;
 
 if (
@@ -31,7 +37,8 @@ if (
   !ACCESS_TOKEN_SECRET ||
   !REFRESH_TOKEN_SECRET ||
   !ACCESS_TOKEN_TTL ||
-  !REFRESH_TOKEN_TTL
+  !REFRESH_TOKEN_TTL ||
+  !STRIPE_SECRET_KEY
 ) {
   throw Error("ERROR: Missing environment variables");
 }
@@ -40,6 +47,8 @@ const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 100,
 });
+
+const stripe = new Stripe(STRIPE_SECRET_KEY);
 
 app.use(limiter);
 app.use(express.json());
@@ -52,7 +61,9 @@ app.use("/", (req: Request, res: Response, next: NextFunction) => {
 app.post("/auth/refresh", async (req: Request, res: Response) => {
   try {
     const parsed = parseOrThrow(RefreshTokenSchema, req.body);
-    const decoded = jwt.verify(parsed.refreshToken, REFRESH_TOKEN_SECRET) as { id: string };
+    const decoded = jwt.verify(parsed.refreshToken, REFRESH_TOKEN_SECRET) as {
+      id: string;
+    };
 
     const user = await prisma.user.findUnique({ where: { id: decoded.id } });
 
@@ -84,13 +95,42 @@ app.post("/register", async (req: Request, res: Response) => {
   try {
     const parsed = parseOrThrow(RegisterSchema, req.body);
     const hashedPassword = await bcrypt.hash(parsed.password, 10);
-    await prisma.user.create({
-      data: { ...parsed, password: hashedPassword },
-    });
+
+    let user: Awaited<ReturnType<typeof prisma.user.create>> | null = null;
+    try {
+      user = await prisma.user.create({
+        data: { ...parsed, password: hashedPassword },
+      });
+
+      let customer: Stripe.Customer | null = await stripe.customers.create({
+        email: parsed.email,
+      });
+
+      await prisma.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          stripeCustomerId: customer.id,
+        },
+      });
+    } catch (stripeError) {
+      await prisma.user.delete({
+        where: {
+          id: user?.id,
+        },
+      });
+
+      return res.sendStatus(500);
+    }
+
     return res.sendStatus(201);
   } catch (e) {
     if (e instanceof ZodError) return res.sendStatus(400);
-    if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2002") {
+    if (
+      e instanceof Prisma.PrismaClientKnownRequestError &&
+      e.code === "P2002"
+    ) {
       return res.status(409).json({ error: "Username or email already taken" });
     }
     return res.sendStatus(500);
@@ -100,12 +140,18 @@ app.post("/register", async (req: Request, res: Response) => {
 app.post("/login", async (req: Request, res: Response) => {
   try {
     const parsed = parseOrThrow(LoginSchema, req.body);
-    const user = await prisma.user.findUnique({ where: { username: parsed.username } });
+    const user = await prisma.user.findUnique({
+      where: { username: parsed.username },
+    });
 
     if (!user) return res.status(401).json({ message: "Invalid credentials" });
 
-    const passwordMatches = await bcrypt.compare(parsed.password, user.password);
-    if (!passwordMatches) return res.status(401).json({ message: "Invalid credentials" });
+    const passwordMatches = await bcrypt.compare(
+      parsed.password,
+      user.password,
+    );
+    if (!passwordMatches)
+      return res.status(401).json({ message: "Invalid credentials" });
 
     const accessToken = jwt.sign(
       { id: user.id, username: user.username },
@@ -119,7 +165,10 @@ app.post("/login", async (req: Request, res: Response) => {
       { expiresIn: REFRESH_TOKEN_TTL as SignOptions["expiresIn"] },
     );
 
-    await prisma.user.update({ where: { id: user.id }, data: { refreshToken } });
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { refreshToken },
+    });
 
     return res.status(200).json({ accessToken, refreshToken });
   } catch (e) {
@@ -172,4 +221,30 @@ app.use((err: any, _: Request, res: Response, next: NextFunction) => {
   return res.sendStatus(500);
 });
 
-app.listen(3000, () => console.log(`Listening on port ${PORT}`));
+const ensureStripeCustomers = async () => {
+  const users = await prisma.user.findMany({
+    where: {
+      stripeCustomerId: null,
+    },
+  });
+
+  for (const user of users) {
+    const customer = await stripe.customers.create({
+      email: user.email,
+    });
+
+    prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        stripeCustomerId: customer.id,
+      },
+    });
+  }
+};
+
+app.listen(3000, async () => {
+  //await ensureStripeCustomers();
+  console.log(`Listening on port ${PORT}`);
+});

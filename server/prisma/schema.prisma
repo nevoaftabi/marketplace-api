@@ -20,6 +20,8 @@ model User {
   claims Claim[]
   tasks Task[]
   refreshToken String?
+  stripeCustomerId String?
+  plan String @default("free") 
 }
 
 model Claim {

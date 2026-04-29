@@ -30,6 +30,8 @@ export type UserMinAggregateOutputType = {
   password: string | null
   email: string | null
   refreshToken: string | null
+  stripeCustomerId: string | null
+  plan: string | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -38,6 +40,8 @@ export type UserMaxAggregateOutputType = {
   password: string | null
   email: string | null
   refreshToken: string | null
+  stripeCustomerId: string | null
+  plan: string | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -46,6 +50,8 @@ export type UserCountAggregateOutputType = {
   password: number
   email: number
   refreshToken: number
+  stripeCustomerId: number
+  plan: number
   _all: number
 }
 
@@ -56,6 +62,8 @@ export type UserMinAggregateInputType = {
   password?: true
   email?: true
   refreshToken?: true
+  stripeCustomerId?: true
+  plan?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -64,6 +72,8 @@ export type UserMaxAggregateInputType = {
   password?: true
   email?: true
   refreshToken?: true
+  stripeCustomerId?: true
+  plan?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -72,6 +82,8 @@ export type UserCountAggregateInputType = {
   password?: true
   email?: true
   refreshToken?: true
+  stripeCustomerId?: true
+  plan?: true
   _all?: true
 }
 
@@ -153,6 +165,8 @@ export type UserGroupByOutputType = {
   password: string
   email: string
   refreshToken: string | null
+  stripeCustomerId: string | null
+  plan: string
   _count: UserCountAggregateOutputType | null
   _min: UserMinAggregateOutputType | null
   _max: UserMaxAggregateOutputType | null
@@ -182,6 +196,8 @@ export type UserWhereInput = {
   password?: Prisma.StringFilter<"User"> | string
   email?: Prisma.StringFilter<"User"> | string
   refreshToken?: Prisma.StringNullableFilter<"User"> | string | null
+  stripeCustomerId?: Prisma.StringNullableFilter<"User"> | string | null
+  plan?: Prisma.StringFilter<"User"> | string
   claims?: Prisma.ClaimListRelationFilter
   tasks?: Prisma.TaskListRelationFilter
 }
@@ -192,6 +208,8 @@ export type UserOrderByWithRelationInput = {
   password?: Prisma.SortOrder
   email?: Prisma.SortOrder
   refreshToken?: Prisma.SortOrderInput | Prisma.SortOrder
+  stripeCustomerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  plan?: Prisma.SortOrder
   claims?: Prisma.ClaimOrderByRelationAggregateInput
   tasks?: Prisma.TaskOrderByRelationAggregateInput
 }
@@ -205,6 +223,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   password?: Prisma.StringFilter<"User"> | string
   refreshToken?: Prisma.StringNullableFilter<"User"> | string | null
+  stripeCustomerId?: Prisma.StringNullableFilter<"User"> | string | null
+  plan?: Prisma.StringFilter<"User"> | string
   claims?: Prisma.ClaimListRelationFilter
   tasks?: Prisma.TaskListRelationFilter
 }, "id" | "username" | "email">
@@ -215,6 +235,8 @@ export type UserOrderByWithAggregationInput = {
   password?: Prisma.SortOrder
   email?: Prisma.SortOrder
   refreshToken?: Prisma.SortOrderInput | Prisma.SortOrder
+  stripeCustomerId?: Prisma.SortOrderInput | Prisma.SortOrder
+  plan?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
   _min?: Prisma.UserMinOrderByAggregateInput
@@ -229,6 +251,8 @@ export type UserScalarWhereWithAggregatesInput = {
   password?: Prisma.StringWithAggregatesFilter<"User"> | string
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
   refreshToken?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  stripeCustomerId?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  plan?: Prisma.StringWithAggregatesFilter<"User"> | string
 }
 
 export type UserCreateInput = {
@@ -237,6 +261,8 @@ export type UserCreateInput = {
   password: string
   email: string
   refreshToken?: string | null
+  stripeCustomerId?: string | null
+  plan?: string
   claims?: Prisma.ClaimCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
 }
@@ -247,6 +273,8 @@ export type UserUncheckedCreateInput = {
   password: string
   email: string
   refreshToken?: string | null
+  stripeCustomerId?: string | null
+  plan?: string
   claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
 }
@@ -257,6 +285,8 @@ export type UserUpdateInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
   claims?: Prisma.ClaimUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
 }
@@ -267,6 +297,8 @@ export type UserUncheckedUpdateInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
   claims?: Prisma.ClaimUncheckedUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
 }
@@ -277,6 +309,8 @@ export type UserCreateManyInput = {
   password: string
   email: string
   refreshToken?: string | null
+  stripeCustomerId?: string | null
+  plan?: string
 }
 
 export type UserUpdateManyMutationInput = {
@@ -285,6 +319,8 @@ export type UserUpdateManyMutationInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -293,6 +329,8 @@ export type UserUncheckedUpdateManyInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -301,6 +339,8 @@ export type UserCountOrderByAggregateInput = {
   password?: Prisma.SortOrder
   email?: Prisma.SortOrder
   refreshToken?: Prisma.SortOrder
+  stripeCustomerId?: Prisma.SortOrder
+  plan?: Prisma.SortOrder
 }
 
 export type UserMaxOrderByAggregateInput = {
@@ -309,6 +349,8 @@ export type UserMaxOrderByAggregateInput = {
   password?: Prisma.SortOrder
   email?: Prisma.SortOrder
   refreshToken?: Prisma.SortOrder
+  stripeCustomerId?: Prisma.SortOrder
+  plan?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -317,6 +359,8 @@ export type UserMinOrderByAggregateInput = {
   password?: Prisma.SortOrder
   email?: Prisma.SortOrder
   refreshToken?: Prisma.SortOrder
+  stripeCustomerId?: Prisma.SortOrder
+  plan?: Prisma.SortOrder
 }
 
 export type UserScalarRelationFilter = {
@@ -366,6 +410,8 @@ export type UserCreateWithoutClaimsInput = {
   password: string
   email: string
   refreshToken?: string | null
+  stripeCustomerId?: string | null
+  plan?: string
   tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
 }
 
@@ -375,6 +421,8 @@ export type UserUncheckedCreateWithoutClaimsInput = {
   password: string
   email: string
   refreshToken?: string | null
+  stripeCustomerId?: string | null
+  plan?: string
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -400,6 +448,8 @@ export type UserUpdateWithoutClaimsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
   tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
 }
 
@@ -409,6 +459,8 @@ export type UserUncheckedUpdateWithoutClaimsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -418,6 +470,8 @@ export type UserCreateWithoutTasksInput = {
   password: string
   email: string
   refreshToken?: string | null
+  stripeCustomerId?: string | null
+  plan?: string
   claims?: Prisma.ClaimCreateNestedManyWithoutUserInput
 }
 
@@ -427,6 +481,8 @@ export type UserUncheckedCreateWithoutTasksInput = {
   password: string
   email: string
   refreshToken?: string | null
+  stripeCustomerId?: string | null
+  plan?: string
   claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutUserInput
 }
 
@@ -452,6 +508,8 @@ export type UserUpdateWithoutTasksInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
   claims?: Prisma.ClaimUpdateManyWithoutUserNestedInput
 }
 
@@ -461,6 +519,8 @@ export type UserUncheckedUpdateWithoutTasksInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plan?: Prisma.StringFieldUpdateOperationsInput | string
   claims?: Prisma.ClaimUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -510,6 +570,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   password?: boolean
   email?: boolean
   refreshToken?: boolean
+  stripeCustomerId?: boolean
+  plan?: boolean
   claims?: boolean | Prisma.User$claimsArgs<ExtArgs>
   tasks?: boolean | Prisma.User$tasksArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -521,6 +583,8 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   password?: boolean
   email?: boolean
   refreshToken?: boolean
+  stripeCustomerId?: boolean
+  plan?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -529,6 +593,8 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   password?: boolean
   email?: boolean
   refreshToken?: boolean
+  stripeCustomerId?: boolean
+  plan?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
@@ -537,9 +603,11 @@ export type UserSelectScalar = {
   password?: boolean
   email?: boolean
   refreshToken?: boolean
+  stripeCustomerId?: boolean
+  plan?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "username" | "password" | "email" | "refreshToken", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "username" | "password" | "email" | "refreshToken" | "stripeCustomerId" | "plan", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   claims?: boolean | Prisma.User$claimsArgs<ExtArgs>
   tasks?: boolean | Prisma.User$tasksArgs<ExtArgs>
@@ -560,6 +628,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     password: string
     email: string
     refreshToken: string | null
+    stripeCustomerId: string | null
+    plan: string
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -990,6 +1060,8 @@ export interface UserFieldRefs {
   readonly password: Prisma.FieldRef<"User", 'String'>
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly refreshToken: Prisma.FieldRef<"User", 'String'>
+  readonly stripeCustomerId: Prisma.FieldRef<"User", 'String'>
+  readonly plan: Prisma.FieldRef<"User", 'String'>
 }
     
 
