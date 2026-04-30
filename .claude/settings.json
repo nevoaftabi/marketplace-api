@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotenv -e .env -- node -e \"console.log\\(process.env.STRIPE_BASIC_PRICE_ID, process.env.STRIPE_UNLIMITED_PRICE_ID\\)\")",
+      "Bash(node --env-file=.env -e \"console.log\\(process.env.STRIPE_BASIC_PRICE_ID, process.env.STRIPE_UNLIMITED_PRICE_ID\\)\")"
+    ]
+  }
+}

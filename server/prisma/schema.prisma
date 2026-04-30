@@ -12,6 +12,12 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Plan {
+  free
+  basic
+  unlimited
+}
+
 model User {
   id String @id @default(uuid())
   username String @unique @db.VarChar(20)
@@ -21,7 +27,7 @@ model User {
   tasks Task[]
   refreshToken String?
   stripeCustomerId String?
-  plan String @default("free") 
+  plan Plan @default(free) 
 }
 
 model Claim {

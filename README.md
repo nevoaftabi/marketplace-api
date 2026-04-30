@@ -4,14 +4,20 @@ This is a backend for a marketplace app. Users can sign up, log in, post tasks, 
 
 Users can claim multiple tasks, but only one user is allowed to claim a task at a time.
 
-Features
+# Features
 * Input validation - responds with 400 if the data received is not valid 
 * Pagination for the /tasks route - you can specify which page and how many results you want
 * Handles malformed JSON
 * Securely stores passwords in the database (hash + salt)
 * Rate limiting 
+* Subscriptions with Stripe
 
-Technologies used
+# Subscriptions (one time)
+* Free (default) - post up to 5 tasks
+* Basic ($5) - post up to 20 tasks
+* Unlimited ($10) - post unlimited tasks
+
+# Technologies used
 * Express - for the API
 * Node.js
 * TypeScript

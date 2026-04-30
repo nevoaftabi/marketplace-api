@@ -70,3 +70,7 @@ export const parseOrThrow = <T>(schema: z.ZodType<T>, data: unknown): T => {
 
   return parsed.data;
 };
+
+export const StripeSubscribeBody = z.object({
+  plan: z.enum(["basic", "unlimited"])
+})

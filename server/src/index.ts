@@ -1,7 +1,3 @@
-// Stripe:
-// Customer - a stripe object representing your user. You create one when a user registers or first tries to subscribe
-// Product + price - you define your plans in the stripe dashboard (e.g. basic at $5/month, unlimited at $10/month)
-
 import express, { NextFunction, Request, Response } from "express";
 import { prisma } from "./db.ts";
 import { ZodError } from "zod";
@@ -19,7 +15,8 @@ import {
 } from "./schemas.ts";
 import rateLimit from "express-rate-limit";
 import { authMiddleware, router as authRouter } from "./routes/auth.ts";
-import { Stripe } from "stripe";
+import Stripe from "stripe";
+import { stripe } from "./stripe.ts";
 
 const app = express();
 
@@ -47,8 +44,6 @@ const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 100,
 });
-
-const stripe = new Stripe(STRIPE_SECRET_KEY);
 
 app.use(limiter);
 app.use(express.json());
@@ -233,7 +228,7 @@ const ensureStripeCustomers = async () => {
       email: user.email,
     });
 
-    prisma.user.update({
+    await prisma.user.update({
       where: {
         id: user.id,
       },
