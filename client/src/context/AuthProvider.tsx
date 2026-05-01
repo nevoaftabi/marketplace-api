@@ -6,10 +6,9 @@ import { AuthContext } from './AuthContext';
 // Any component inside it can read and update the token
 export const AuthProvider = ({children}: { children: React.ReactNode }) => {
     const [accessToken, setAccessToken] = useState<string | null>(null);
-    const [refreshToken, setRefreshToken] = useState<string | null>(null);
     
     return (
-        <AuthContext.Provider value={{accessToken, refreshToken, setAccessToken, setRefreshToken}}>
+        <AuthContext.Provider value={{accessToken, setAccessToken}}>
             {children}
         </AuthContext.Provider>
     )

@@ -31,11 +31,12 @@ const Login = () => {
       const json = await res.json();
 
       if (!res.ok) {
-        setErrors(json.errors);
+        setErrors(json.message ?? "Invalid credentials");
         return;
       }
 
       setAccessToken(json.accessToken);
+      localStorage.setItem("refreshToken", json.refreshToken);
       navigate("/");
     } catch {
       setErrors({
