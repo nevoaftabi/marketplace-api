@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from "express";
+import express, { NextFunction, Request, Response, Router } from "express";
 import { prisma } from "./db.ts";
 import { ZodError } from "zod";
 import bcrypt from "bcryptjs";
@@ -121,7 +121,7 @@ app.post("/register", async (req: Request, res: Response) => {
 
     return res.sendStatus(201);
   } catch (e) {
-    if (e instanceof ZodError) return res.sendStatus(400);
+    if (e instanceof ZodError) return res.status(400).json(e.flatten().fieldErrors);
     if (
       e instanceof Prisma.PrismaClientKnownRequestError &&
       e.code === "P2002"
@@ -167,7 +167,7 @@ app.post("/login", async (req: Request, res: Response) => {
 
     return res.status(200).json({ accessToken, refreshToken });
   } catch (e) {
-    if (e instanceof ZodError) return res.sendStatus(400);
+    if (e instanceof ZodError) return res.status(400).json(e.flatten().fieldErrors);
     return res.sendStatus(500);
   }
 });

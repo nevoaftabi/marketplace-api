@@ -4,6 +4,6 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\""
+    "dev": "concurrently --names \"server,client\" \"npm run dev --prefix server\" \"npm run dev --prefix client\""
   }
 }

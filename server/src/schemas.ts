@@ -23,14 +23,14 @@ export const GetTaskParams = z.object({
 });
 
 export const RegisterSchema = z.object({
-  username: z.string().min(1, "is required").max(20, "is too long"),
-  password: z.string().min(10, "is too short").max(50, "is too long"),
+  username: z.string().min(1).max(20),
+  password: z.string().min(10).max(50),
   email: z.email(),
 });
 
 export const LoginSchema = z.object({
-    username: z.string().min(1, "is required").max(20, "is too long"),
-    password: z.string().min(1, "is too short").max(50, "is too long")
+    username: z.string().min(1).max(20),
+    password: z.string().min(1).max(50)
 });
 
 export const DeleteTaskParams = z.object({
