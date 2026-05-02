@@ -121,7 +121,8 @@ app.post("/register", async (req: Request, res: Response) => {
 
     return res.sendStatus(201);
   } catch (e) {
-    if (e instanceof ZodError) return res.status(400).json(e.flatten().fieldErrors);
+    if (e instanceof ZodError)
+      return res.status(400).json(e.flatten().fieldErrors);
     if (
       e instanceof Prisma.PrismaClientKnownRequestError &&
       e.code === "P2002"
@@ -167,12 +168,22 @@ app.post("/login", async (req: Request, res: Response) => {
 
     return res.status(200).json({ accessToken, refreshToken });
   } catch (e) {
-    if (e instanceof ZodError) return res.status(400).json(e.flatten().fieldErrors);
+    if (e instanceof ZodError)
+      return res.status(400).json(e.flatten().fieldErrors);
     return res.sendStatus(500);
   }
 });
 
 app.get("/tasks", async (req: Request, res: Response) => {
+  let userId: string | null = null;
+  const authHeader = req.headers["authorization"];
+  if (authHeader) {
+    try {
+      const token = authHeader.replace("Bearer ", "");
+      const decoded = jwt.verify(token, ACCESS_TOKEN_SECRET!) as { id: string };
+      userId = decoded.id;
+    } catch {}
+  }
   try {
     const parsed = parseOrThrow(GetTasksSchema, req.query);
     const skip = (parsed.page - 1) * parsed.limit;
@@ -181,19 +192,38 @@ app.get("/tasks", async (req: Request, res: Response) => {
       prisma.task.findMany({
         skip,
         take: parsed.limit,
-        select: { id: true, title: true, description: true, pay: true },
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          pay: true,
+          user: { select: { username: true } },
+          claim: { select: { userId: true } },
+        },
+        where: {
+          OR: [
+            { claim: null },
+            { claim: { userId: userId ?? undefined }}
+          ]
+        }
       }),
       prisma.task.count(),
     ]);
 
     return res.status(200).json({
-      tasks: tasks.map((t) => ({ ...t, pay: parseFloat(t.pay.toString()) })),
+      tasks: tasks.map(({ user, claim, pay, ...rest }) => ({
+        ...rest,
+        pay: parseFloat(pay.toString()),
+        username: user.username,
+        claimed: userId ? claim?.userId === userId : false,
+      })),
       total,
       page: parsed.page,
       limit: parsed.limit,
     });
   } catch (error) {
-    if (error instanceof ZodError) return res.sendStatus(400);
+    if (error instanceof ZodError)
+      return res.status(400).json(error.flatten().fieldErrors);
     return res.sendStatus(500);
   }
 });

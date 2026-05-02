@@ -3,7 +3,7 @@ import { createContext } from "react";
 // The type defines what data it holds; the access token and a function to update it
 type AuthContextType = {
     accessToken: string | null
-    setAccessToken: (token: string) => void
+    setAccessToken: (token: string | null) => void
 }
 
 // Creates a React context object, which is like a "container" that can hold data and make it available

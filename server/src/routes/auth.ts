@@ -12,6 +12,7 @@ import {
   AcceptClaimSchema,
   RejectClaimSchema,
   StripeSubscribeBody,
+  GetTasksSchema,
 } from "../schemas.ts";
 import { prisma } from "../db.ts";
 import { Prisma } from "../../generated/prisma/client.ts";

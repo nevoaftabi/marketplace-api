@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../context/useAuth";
 import { useNavigate } from "react-router-dom";
+import { setToken } from "../utils/api";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -31,11 +32,12 @@ const Login = () => {
       const json = await res.json();
 
       if (!res.ok) {
-        setErrors(json.message ?? "Invalid credentials");
+        setErrors({ general: [json.message ?? "Invalid credentials"]});
         return;
       }
 
       setAccessToken(json.accessToken);
+      setToken(json.accessToken);
       localStorage.setItem("refreshToken", json.refreshToken);
       navigate("/");
     } catch {
