@@ -12,11 +12,15 @@ import {
   GetTasksSchema,
   RefreshTokenSchema,
   parseOrThrow,
+  WsMessagePayload,
+  WsAuthMessage
 } from "./schemas.ts";
 import rateLimit from "express-rate-limit";
 import { authMiddleware, router as authRouter } from "./routes/auth.ts";
 import Stripe from "stripe";
 import { stripe } from "./stripe.ts";
+import { createServer } from "http";
+import { WebSocketServer, WebSocket as WS } from "ws";
 
 const app = express();
 
@@ -43,6 +47,89 @@ if (
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 100,
+});
+
+// Creates an HTTP server manually and passes express into it. 
+// This lets websockets and http share the same port
+const server = createServer(app);
+
+// Attaches a websocket server to the same http serno ver. Any ws:// connectiosn come here.
+const wss = new WebSocketServer({ server });
+
+// An in-memory lookup of userId->socket. When a user A wants to send to user B you look up B's socket
+// here and write to it directly 
+const clients = new Map<string, WS>();
+
+// fires whenever a new websocket connection is opened. each connection gets its own userId varaible
+wss.on("connection", (ws) => {
+  let userId: string | null = null;
+
+  // whenever the client sends data, you parse the json and handle it based on msg.type
+  ws.on("message", async (data) => {
+    const msg = JSON.parse(data.toString());
+
+    // the client sends their own jwt token. you verify it, extract the userId, and storethe socket in clients
+    if (msg.type === "auth") {
+      
+      try {
+        const result = WsAuthMessage.safeParse(msg);
+        if(!result.success) {
+          ws.send(JSON.stringify({ type: 'error', message: 'Invalid auth' }));
+          return;
+        }
+        const decoded = jwt.verify(msg.token, ACCESS_TOKEN_SECRET!) as {
+          id: string;
+        };
+        userId = decoded.id;
+        clients.set(userId, ws);
+        ws.send(JSON.stringify({ type: "auth", success: true }));
+      } catch {
+        ws.send(JSON.stringify({ type: "auth", success: false }));
+        ws.close();
+      }
+    }
+    else if (msg.type === "message") {
+      const result = WsMessagePayload.safeParse(msg)
+      if(!result.success) {
+        ws.send(JSON.stringify({ type: 'error', message: "Invalid message"}));
+        return;
+      }
+      // the client wants to send a chat message
+      if (!userId) {
+        ws.close();
+        return;
+      }
+
+      // save the message to the db
+      await prisma.message.create({
+        data: {
+          senderId: userId,
+          taskId: msg.taskId,
+          content: msg.content,
+        },
+      });
+
+      // look up recipient socket and send the message in real time
+      const recipientSocket = clients.get(msg.recipientId);
+      if (recipientSocket) {
+        recipientSocket.send(
+          JSON.stringify({
+            type: "message",
+            senderId: userId,
+            content: msg.content,
+            taskId: msg.taskId,
+          }),
+        );
+      }
+    }
+  });
+  ws.on("close", () => {
+    // fires when the connection drops. you can remove the user from clients so you don't try to send 
+    // to a dead socket
+    if (userId) {
+      clients.delete(userId);
+    }
+  });
 });
 
 app.use(limiter);
@@ -201,11 +288,8 @@ app.get("/tasks", async (req: Request, res: Response) => {
           claim: { select: { userId: true } },
         },
         where: {
-          OR: [
-            { claim: null },
-            { claim: { userId: userId ?? undefined }}
-          ]
-        }
+          OR: [{ claim: null }, { claim: { userId: userId ?? undefined } }],
+        },
       }),
       prisma.task.count(),
     ]);
@@ -269,7 +353,9 @@ const ensureStripeCustomers = async () => {
   }
 };
 
-app.listen(3000, async () => {
-  //await ensureStripeCustomers();
-  console.log(`Listening on port ${PORT}`);
-});
+server.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+
+// app.listen(3000, async () => {
+//   //await ensureStripeCustomers();
+//   console.log(`Listening on port ${PORT}`);
+// });

@@ -52,6 +52,11 @@ export type User = Prisma.UserModel
  */
 export type Claim = Prisma.ClaimModel
 /**
+ * Model Message
+ * 
+ */
+export type Message = Prisma.MessageModel
+/**
  * Model Task
  * 
  */

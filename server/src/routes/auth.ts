@@ -13,6 +13,7 @@ import {
   RejectClaimSchema,
   StripeSubscribeBody,
   GetTasksSchema,
+  GetTaskMessages,
 } from "../schemas.ts";
 import { prisma } from "../db.ts";
 import { Prisma } from "../../generated/prisma/client.ts";
@@ -165,104 +166,12 @@ router.delete("/tasks/:id", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/tasks/:id/claim", async (req: Request, res: Response) => {
+router.get("/tasks/:taskId/messages", async (req: Request, res: Response) => {
   try {
-    const parsed = parseOrThrow(GetTaskClaimParams, req.params);
-    const claim = await prisma.claim.findUnique({
-      where: { taskId: parsed.id },
-    });
-    return res.status(200).json(claim);
-  } catch (error) {
-    if (error instanceof ZodError) return res.sendStatus(400);
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2025"
-    ) {
-      return res.sendStatus(404);
-    }
-    return res.sendStatus(500);
+    
   }
-});
+  catch {
 
-router.post("/tasks/:id/claim", async (req: Request, res: Response) => {
-  try {
-    const parsed = parseOrThrow(CreateClaimParams, req.params);
-    await prisma.claim.create({
-      data: { taskId: parsed.id, userId: res.locals.user.id },
-    });
-    return res.sendStatus(201);
-  } catch (error) {
-    if (error instanceof ZodError) return res.sendStatus(400);
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2002"
-    ) {
-      return res.status(409).json({ error: "Task has already been claimed" });
-    }
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      (error.code === "P2025" || error.code === "P2003")
-    ) {
-      return res.sendStatus(404);
-    }
-    return res.sendStatus(500);
   }
-});
+}); 
 
-router.post("/tasks/:id/claim/accept", async (req: Request, res: Response) => {
-  try {
-    const parsed = parseOrThrow(AcceptClaimSchema, req.params);
-    const task = await prisma.task.findUnique({
-      where: { id: parsed.id, userId: res.locals.user.id },
-    });
-    if (!task) return res.sendStatus(404);
-
-    const claim = await prisma.claim.findUnique({
-      where: { taskId: parsed.id },
-    });
-    if (!claim) return res.sendStatus(404);
-    if (claim.accepted) return res.sendStatus(409);
-
-    await prisma.claim.update({
-      where: { taskId: parsed.id },
-      data: { accepted: true },
-    });
-    return res.sendStatus(200);
-  } catch (error) {
-    if (error instanceof ZodError) return res.sendStatus(400);
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2025"
-    ) {
-      return res.sendStatus(404);
-    }
-    return res.sendStatus(500);
-  }
-});
-
-router.post("/tasks/:id/claim/reject", async (req: Request, res: Response) => {
-  try {
-    const parsed = parseOrThrow(RejectClaimSchema, req.params);
-    const task = await prisma.task.findUnique({
-      where: { id: parsed.id, userId: res.locals.user.id },
-    });
-    if (!task) return res.sendStatus(404);
-
-    const claim = await prisma.claim.findUnique({
-      where: { taskId: parsed.id },
-    });
-    if (!claim) return res.sendStatus(404);
-
-    await prisma.claim.delete({ where: { taskId: parsed.id } });
-    return res.sendStatus(200);
-  } catch (error) {
-    if (error instanceof ZodError) return res.sendStatus(400);
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2025"
-    ) {
-      return res.sendStatus(404);
-    }
-    return res.sendStatus(500);
-  }
-});

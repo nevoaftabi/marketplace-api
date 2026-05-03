@@ -37,14 +37,6 @@ export const DeleteTaskParams = z.object({
     id: z.uuid()
 });
 
-export const CreateClaimParams = z.object({
-    id: z.uuid()
-})
-
-export const GetTaskClaimParams = z.object({
-    id: z.uuid()
-})
-
 export const RefreshTokenSchema = z.object({
   refreshToken: z.string(),
 });
@@ -52,14 +44,6 @@ export const RefreshTokenSchema = z.object({
 export const GetTasksSchema = z.object({
   page: z.coerce.number().min(1).max(10).default(1),
   limit: z.coerce.number(),
-});
-
-export const AcceptClaimSchema = z.object({
-  id: z.uuid(),
-});
-
-export const RejectClaimSchema = z.object({
-  id: z.uuid(),
 });
 
 export const parseOrThrow = <T>(schema: z.ZodType<T>, data: unknown): T => {
@@ -73,4 +57,20 @@ export const parseOrThrow = <T>(schema: z.ZodType<T>, data: unknown): T => {
 
 export const StripeSubscribeBody = z.object({
   plan: z.enum(["basic", "unlimited"])
+});
+
+export const WsAuthMessage = z.object({
+    type: z.literal('auth'),
+    token: z.string()
+});
+
+export const WsMessagePayload = z.object({
+    type: z.literal('message'),
+    taskId: z.uuid(),
+    recipientId: z.uuid(),
+    content: z.string().min(1).max(2000)
+});
+
+export const GetTaskMessages = z.object({
+  id: z.uuid()
 })

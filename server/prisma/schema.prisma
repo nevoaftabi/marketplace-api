@@ -23,20 +23,22 @@ model User {
   username String @unique @db.VarChar(20)
   password String @db.VarChar(60)
   email String @unique @db.VarChar(255)
-  claims Claim[]
   tasks Task[]
   refreshToken String?
   stripeCustomerId String?
   plan Plan @default(free) 
+  messages Message[]
 }
 
-model Claim {
+model Message {
   id String @id @default(uuid())
-  userId String
-  user User @relation(fields: [userId], references: [id])
-  taskId String @unique 
-  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  accepted Boolean @default(false)
+  senderId String
+  taskId String
+  content String
+  createdAt DateTime @default(now())
+
+  sender User @relation(fields: [senderId], references: [id])
+  task Task @relation(fields: [taskId], references: [id])
 }
 
 model Task {
@@ -45,6 +47,6 @@ model Task {
   title String @db.VarChar(200)
   pay Decimal @db.Decimal(12, 2)
   description String @db.VarChar(10000)
-  claim Claim?
   user User @relation(fields: [userId], references: [id])
+  messages Message[]
 }
