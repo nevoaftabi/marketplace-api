@@ -285,21 +285,16 @@ app.get("/tasks", async (req: Request, res: Response) => {
           description: true,
           pay: true,
           user: { select: { username: true } },
-          claim: { select: { userId: true } },
-        },
-        where: {
-          OR: [{ claim: null }, { claim: { userId: userId ?? undefined } }],
         },
       }),
       prisma.task.count(),
     ]);
 
     return res.status(200).json({
-      tasks: tasks.map(({ user, claim, pay, ...rest }) => ({
+      tasks: tasks.map(({ user, pay, ...rest }) => ({
         ...rest,
         pay: parseFloat(pay.toString()),
         username: user.username,
-        claimed: userId ? claim?.userId === userId : false,
       })),
       total,
       page: parsed.page,

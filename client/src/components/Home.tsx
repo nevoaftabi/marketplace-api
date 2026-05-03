@@ -11,7 +11,6 @@ type Task = {
   description: string;
   pay: number;
   username: string;
-  claimed: boolean;
 };
 
 function Home() {
@@ -138,8 +137,8 @@ function Home() {
           <p>Description: {task.description}</p>
           <p>Pay: ${task.pay}</p>
           <p>Posted by: {task.username}</p>
-          <button disabled={task.claimed} onClick={() => handleClaim(task.id)}>
-            {task.claimed ? "Claimed" : "Claim"}
+          <button onClick={() => handleClaim(task.id)}>
+            Message owner
           </button>
           <br />
           <br />
