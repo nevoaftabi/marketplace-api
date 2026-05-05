@@ -13,7 +13,12 @@ import {
 } from "../schemas.ts";
 import { prisma } from "../db.ts";
 import { Prisma } from "../../generated/prisma/client.ts";
-import { BASIC_TASKS_ALLOWED, FREE_TASKS_ALLOWED, PRICE_IDS, stripe } from "../stripe";
+import {
+  BASIC_TASKS_ALLOWED,
+  FREE_TASKS_ALLOWED,
+  PRICE_IDS,
+  stripe,
+} from "../stripe";
 
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
 
@@ -92,8 +97,8 @@ router.post("/tasks", async (req: Request, res: Response) => {
 
 router.post("/subscribe", async (req: Request, res: Response) => {
   try {
-    console.log('--------------------')
-    console.log(PRICE_IDS.basic, PRICE_IDS.unlimited)
+    console.log("--------------------");
+    console.log(PRICE_IDS.basic, PRICE_IDS.unlimited);
     const parsed = parseOrThrow(StripeSubscribeBody, req.body);
     const user = await prisma.user.findUnique({
       where: {
@@ -114,7 +119,7 @@ router.post("/subscribe", async (req: Request, res: Response) => {
     });
     return res.status(200).json({ url: session.url });
   } catch (error) {
-    if(error instanceof ZodError) {
+    if (error instanceof ZodError) {
       return res.sendStatus(400);
     }
     console.log(error);
@@ -162,12 +167,42 @@ router.delete("/tasks/:id", async (req: Request, res: Response) => {
   }
 });
 
-router.get("/tasks/:taskId/messages", async (req: Request, res: Response) => {
+router.get("/tasks/:id/messages", async (req: Request, res: Response) => {
   try {
-    
-  }
-  catch {
+    const parsed = parseOrThrow(GetTaskMessages, req.params);
+    const task = await prisma.task.findUnique({
+      where: {
+        id: parsed.id,
+      },
+    });
 
-  }
-}); 
+    if (!task) return res.sendStatus(404);
 
+    const messages = await prisma.message.findMany({
+      where: {
+        taskId: task.id,
+        OR: [
+          { recipientId: res.locals.user.id },
+          { senderId: res.locals.user.id },
+        ],
+      },
+      select: {
+        id: true,
+        content: true,
+        createdAt: true,
+        sender: { select: { username: true } },
+        recipient: { select: { username: true } },
+      },
+
+      orderBy: { createdAt: "asc" },
+    });
+
+    return res.status(200).json(messages);
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return res.status(400).json(error.flatten().fieldErrors);
+    }
+
+    return res.sendStatus(500);
+  }
+});

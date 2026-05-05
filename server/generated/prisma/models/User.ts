@@ -198,9 +198,9 @@ export type UserWhereInput = {
   refreshToken?: Prisma.StringNullableFilter<"User"> | string | null
   stripeCustomerId?: Prisma.StringNullableFilter<"User"> | string | null
   plan?: Prisma.EnumPlanFilter<"User"> | $Enums.Plan
-  claims?: Prisma.ClaimListRelationFilter
   tasks?: Prisma.TaskListRelationFilter
-  messages?: Prisma.MessageListRelationFilter
+  sentMessages?: Prisma.MessageListRelationFilter
+  receivedMessages?: Prisma.MessageListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -211,9 +211,9 @@ export type UserOrderByWithRelationInput = {
   refreshToken?: Prisma.SortOrderInput | Prisma.SortOrder
   stripeCustomerId?: Prisma.SortOrderInput | Prisma.SortOrder
   plan?: Prisma.SortOrder
-  claims?: Prisma.ClaimOrderByRelationAggregateInput
   tasks?: Prisma.TaskOrderByRelationAggregateInput
-  messages?: Prisma.MessageOrderByRelationAggregateInput
+  sentMessages?: Prisma.MessageOrderByRelationAggregateInput
+  receivedMessages?: Prisma.MessageOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -227,9 +227,9 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   refreshToken?: Prisma.StringNullableFilter<"User"> | string | null
   stripeCustomerId?: Prisma.StringNullableFilter<"User"> | string | null
   plan?: Prisma.EnumPlanFilter<"User"> | $Enums.Plan
-  claims?: Prisma.ClaimListRelationFilter
   tasks?: Prisma.TaskListRelationFilter
-  messages?: Prisma.MessageListRelationFilter
+  sentMessages?: Prisma.MessageListRelationFilter
+  receivedMessages?: Prisma.MessageListRelationFilter
 }, "id" | "username" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -266,9 +266,9 @@ export type UserCreateInput = {
   refreshToken?: string | null
   stripeCustomerId?: string | null
   plan?: $Enums.Plan
-  claims?: Prisma.ClaimCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
-  messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  sentMessages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  receivedMessages?: Prisma.MessageCreateNestedManyWithoutRecipientInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -279,9 +279,9 @@ export type UserUncheckedCreateInput = {
   refreshToken?: string | null
   stripeCustomerId?: string | null
   plan?: $Enums.Plan
-  claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
-  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  sentMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  receivedMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutRecipientInput
 }
 
 export type UserUpdateInput = {
@@ -292,9 +292,9 @@ export type UserUpdateInput = {
   refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plan?: Prisma.EnumPlanFieldUpdateOperationsInput | $Enums.Plan
-  claims?: Prisma.ClaimUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
-  messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  sentMessages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  receivedMessages?: Prisma.MessageUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -305,9 +305,9 @@ export type UserUncheckedUpdateInput = {
   refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plan?: Prisma.EnumPlanFieldUpdateOperationsInput | $Enums.Plan
-  claims?: Prisma.ClaimUncheckedUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
-  messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  sentMessages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  receivedMessages?: Prisma.MessageUncheckedUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -387,32 +387,32 @@ export type EnumPlanFieldUpdateOperationsInput = {
   set?: $Enums.Plan
 }
 
-export type UserCreateNestedOneWithoutClaimsInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutClaimsInput, Prisma.UserUncheckedCreateWithoutClaimsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutClaimsInput
+export type UserCreateNestedOneWithoutSentMessagesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSentMessagesInput, Prisma.UserUncheckedCreateWithoutSentMessagesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSentMessagesInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutClaimsNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutClaimsInput, Prisma.UserUncheckedCreateWithoutClaimsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutClaimsInput
-  upsert?: Prisma.UserUpsertWithoutClaimsInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutClaimsInput, Prisma.UserUpdateWithoutClaimsInput>, Prisma.UserUncheckedUpdateWithoutClaimsInput>
-}
-
-export type UserCreateNestedOneWithoutMessagesInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutMessagesInput, Prisma.UserUncheckedCreateWithoutMessagesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMessagesInput
+export type UserCreateNestedOneWithoutReceivedMessagesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReceivedMessagesInput, Prisma.UserUncheckedCreateWithoutReceivedMessagesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReceivedMessagesInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutMessagesNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutMessagesInput, Prisma.UserUncheckedCreateWithoutMessagesInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutMessagesInput
-  upsert?: Prisma.UserUpsertWithoutMessagesInput
+export type UserUpdateOneRequiredWithoutSentMessagesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSentMessagesInput, Prisma.UserUncheckedCreateWithoutSentMessagesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSentMessagesInput
+  upsert?: Prisma.UserUpsertWithoutSentMessagesInput
   connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutMessagesInput, Prisma.UserUpdateWithoutMessagesInput>, Prisma.UserUncheckedUpdateWithoutMessagesInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSentMessagesInput, Prisma.UserUpdateWithoutSentMessagesInput>, Prisma.UserUncheckedUpdateWithoutSentMessagesInput>
+}
+
+export type UserUpdateOneRequiredWithoutReceivedMessagesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutReceivedMessagesInput, Prisma.UserUncheckedCreateWithoutReceivedMessagesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutReceivedMessagesInput
+  upsert?: Prisma.UserUpsertWithoutReceivedMessagesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutReceivedMessagesInput, Prisma.UserUpdateWithoutReceivedMessagesInput>, Prisma.UserUncheckedUpdateWithoutReceivedMessagesInput>
 }
 
 export type UserCreateNestedOneWithoutTasksInput = {
@@ -429,7 +429,7 @@ export type UserUpdateOneRequiredWithoutTasksNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutTasksInput, Prisma.UserUpdateWithoutTasksInput>, Prisma.UserUncheckedUpdateWithoutTasksInput>
 }
 
-export type UserCreateWithoutClaimsInput = {
+export type UserCreateWithoutSentMessagesInput = {
   id?: string
   username: string
   password: string
@@ -438,10 +438,10 @@ export type UserCreateWithoutClaimsInput = {
   stripeCustomerId?: string | null
   plan?: $Enums.Plan
   tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
-  messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  receivedMessages?: Prisma.MessageCreateNestedManyWithoutRecipientInput
 }
 
-export type UserUncheckedCreateWithoutClaimsInput = {
+export type UserUncheckedCreateWithoutSentMessagesInput = {
   id?: string
   username: string
   password: string
@@ -450,50 +450,15 @@ export type UserUncheckedCreateWithoutClaimsInput = {
   stripeCustomerId?: string | null
   plan?: $Enums.Plan
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
-  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  receivedMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutRecipientInput
 }
 
-export type UserCreateOrConnectWithoutClaimsInput = {
+export type UserCreateOrConnectWithoutSentMessagesInput = {
   where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutClaimsInput, Prisma.UserUncheckedCreateWithoutClaimsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSentMessagesInput, Prisma.UserUncheckedCreateWithoutSentMessagesInput>
 }
 
-export type UserUpsertWithoutClaimsInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutClaimsInput, Prisma.UserUncheckedUpdateWithoutClaimsInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutClaimsInput, Prisma.UserUncheckedCreateWithoutClaimsInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutClaimsInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutClaimsInput, Prisma.UserUncheckedUpdateWithoutClaimsInput>
-}
-
-export type UserUpdateWithoutClaimsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  username?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  plan?: Prisma.EnumPlanFieldUpdateOperationsInput | $Enums.Plan
-  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
-  messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
-}
-
-export type UserUncheckedUpdateWithoutClaimsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  username?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  plan?: Prisma.EnumPlanFieldUpdateOperationsInput | $Enums.Plan
-  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
-  messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
-}
-
-export type UserCreateWithoutMessagesInput = {
+export type UserCreateWithoutReceivedMessagesInput = {
   id?: string
   username: string
   password: string
@@ -501,11 +466,11 @@ export type UserCreateWithoutMessagesInput = {
   refreshToken?: string | null
   stripeCustomerId?: string | null
   plan?: $Enums.Plan
-  claims?: Prisma.ClaimCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskCreateNestedManyWithoutUserInput
+  sentMessages?: Prisma.MessageCreateNestedManyWithoutSenderInput
 }
 
-export type UserUncheckedCreateWithoutMessagesInput = {
+export type UserUncheckedCreateWithoutReceivedMessagesInput = {
   id?: string
   username: string
   password: string
@@ -513,27 +478,27 @@ export type UserUncheckedCreateWithoutMessagesInput = {
   refreshToken?: string | null
   stripeCustomerId?: string | null
   plan?: $Enums.Plan
-  claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutUserInput
   tasks?: Prisma.TaskUncheckedCreateNestedManyWithoutUserInput
+  sentMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
 }
 
-export type UserCreateOrConnectWithoutMessagesInput = {
+export type UserCreateOrConnectWithoutReceivedMessagesInput = {
   where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutMessagesInput, Prisma.UserUncheckedCreateWithoutMessagesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReceivedMessagesInput, Prisma.UserUncheckedCreateWithoutReceivedMessagesInput>
 }
 
-export type UserUpsertWithoutMessagesInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutMessagesInput, Prisma.UserUncheckedUpdateWithoutMessagesInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutMessagesInput, Prisma.UserUncheckedCreateWithoutMessagesInput>
+export type UserUpsertWithoutSentMessagesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSentMessagesInput, Prisma.UserUncheckedUpdateWithoutSentMessagesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSentMessagesInput, Prisma.UserUncheckedCreateWithoutSentMessagesInput>
   where?: Prisma.UserWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutMessagesInput = {
+export type UserUpdateToOneWithWhereWithoutSentMessagesInput = {
   where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutMessagesInput, Prisma.UserUncheckedUpdateWithoutMessagesInput>
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSentMessagesInput, Prisma.UserUncheckedUpdateWithoutSentMessagesInput>
 }
 
-export type UserUpdateWithoutMessagesInput = {
+export type UserUpdateWithoutSentMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
@@ -541,11 +506,11 @@ export type UserUpdateWithoutMessagesInput = {
   refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plan?: Prisma.EnumPlanFieldUpdateOperationsInput | $Enums.Plan
-  claims?: Prisma.ClaimUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
+  receivedMessages?: Prisma.MessageUpdateManyWithoutRecipientNestedInput
 }
 
-export type UserUncheckedUpdateWithoutMessagesInput = {
+export type UserUncheckedUpdateWithoutSentMessagesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   username?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
@@ -553,8 +518,43 @@ export type UserUncheckedUpdateWithoutMessagesInput = {
   refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plan?: Prisma.EnumPlanFieldUpdateOperationsInput | $Enums.Plan
-  claims?: Prisma.ClaimUncheckedUpdateManyWithoutUserNestedInput
   tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
+  receivedMessages?: Prisma.MessageUncheckedUpdateManyWithoutRecipientNestedInput
+}
+
+export type UserUpsertWithoutReceivedMessagesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutReceivedMessagesInput, Prisma.UserUncheckedUpdateWithoutReceivedMessagesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutReceivedMessagesInput, Prisma.UserUncheckedCreateWithoutReceivedMessagesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutReceivedMessagesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutReceivedMessagesInput, Prisma.UserUncheckedUpdateWithoutReceivedMessagesInput>
+}
+
+export type UserUpdateWithoutReceivedMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plan?: Prisma.EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+  tasks?: Prisma.TaskUpdateManyWithoutUserNestedInput
+  sentMessages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+}
+
+export type UserUncheckedUpdateWithoutReceivedMessagesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plan?: Prisma.EnumPlanFieldUpdateOperationsInput | $Enums.Plan
+  tasks?: Prisma.TaskUncheckedUpdateManyWithoutUserNestedInput
+  sentMessages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
 }
 
 export type UserCreateWithoutTasksInput = {
@@ -565,8 +565,8 @@ export type UserCreateWithoutTasksInput = {
   refreshToken?: string | null
   stripeCustomerId?: string | null
   plan?: $Enums.Plan
-  claims?: Prisma.ClaimCreateNestedManyWithoutUserInput
-  messages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  sentMessages?: Prisma.MessageCreateNestedManyWithoutSenderInput
+  receivedMessages?: Prisma.MessageCreateNestedManyWithoutRecipientInput
 }
 
 export type UserUncheckedCreateWithoutTasksInput = {
@@ -577,8 +577,8 @@ export type UserUncheckedCreateWithoutTasksInput = {
   refreshToken?: string | null
   stripeCustomerId?: string | null
   plan?: $Enums.Plan
-  claims?: Prisma.ClaimUncheckedCreateNestedManyWithoutUserInput
-  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  sentMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutSenderInput
+  receivedMessages?: Prisma.MessageUncheckedCreateNestedManyWithoutRecipientInput
 }
 
 export type UserCreateOrConnectWithoutTasksInput = {
@@ -605,8 +605,8 @@ export type UserUpdateWithoutTasksInput = {
   refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plan?: Prisma.EnumPlanFieldUpdateOperationsInput | $Enums.Plan
-  claims?: Prisma.ClaimUpdateManyWithoutUserNestedInput
-  messages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  sentMessages?: Prisma.MessageUpdateManyWithoutSenderNestedInput
+  receivedMessages?: Prisma.MessageUpdateManyWithoutRecipientNestedInput
 }
 
 export type UserUncheckedUpdateWithoutTasksInput = {
@@ -617,8 +617,8 @@ export type UserUncheckedUpdateWithoutTasksInput = {
   refreshToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   stripeCustomerId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plan?: Prisma.EnumPlanFieldUpdateOperationsInput | $Enums.Plan
-  claims?: Prisma.ClaimUncheckedUpdateManyWithoutUserNestedInput
-  messages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  sentMessages?: Prisma.MessageUncheckedUpdateManyWithoutSenderNestedInput
+  receivedMessages?: Prisma.MessageUncheckedUpdateManyWithoutRecipientNestedInput
 }
 
 
@@ -627,15 +627,15 @@ export type UserUncheckedUpdateWithoutTasksInput = {
  */
 
 export type UserCountOutputType = {
-  claims: number
   tasks: number
-  messages: number
+  sentMessages: number
+  receivedMessages: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  claims?: boolean | UserCountOutputTypeCountClaimsArgs
   tasks?: boolean | UserCountOutputTypeCountTasksArgs
-  messages?: boolean | UserCountOutputTypeCountMessagesArgs
+  sentMessages?: boolean | UserCountOutputTypeCountSentMessagesArgs
+  receivedMessages?: boolean | UserCountOutputTypeCountReceivedMessagesArgs
 }
 
 /**
@@ -651,13 +651,6 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountClaimsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.ClaimWhereInput
-}
-
-/**
- * UserCountOutputType without action
- */
 export type UserCountOutputTypeCountTasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.TaskWhereInput
 }
@@ -665,7 +658,14 @@ export type UserCountOutputTypeCountTasksArgs<ExtArgs extends runtime.Types.Exte
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type UserCountOutputTypeCountSentMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.MessageWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountReceivedMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.MessageWhereInput
 }
 
@@ -678,9 +678,9 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   refreshToken?: boolean
   stripeCustomerId?: boolean
   plan?: boolean
-  claims?: boolean | Prisma.User$claimsArgs<ExtArgs>
   tasks?: boolean | Prisma.User$tasksArgs<ExtArgs>
-  messages?: boolean | Prisma.User$messagesArgs<ExtArgs>
+  sentMessages?: boolean | Prisma.User$sentMessagesArgs<ExtArgs>
+  receivedMessages?: boolean | Prisma.User$receivedMessagesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -716,9 +716,9 @@ export type UserSelectScalar = {
 
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "username" | "password" | "email" | "refreshToken" | "stripeCustomerId" | "plan", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  claims?: boolean | Prisma.User$claimsArgs<ExtArgs>
   tasks?: boolean | Prisma.User$tasksArgs<ExtArgs>
-  messages?: boolean | Prisma.User$messagesArgs<ExtArgs>
+  sentMessages?: boolean | Prisma.User$sentMessagesArgs<ExtArgs>
+  receivedMessages?: boolean | Prisma.User$receivedMessagesArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -727,9 +727,9 @@ export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
-    claims: Prisma.$ClaimPayload<ExtArgs>[]
     tasks: Prisma.$TaskPayload<ExtArgs>[]
-    messages: Prisma.$MessagePayload<ExtArgs>[]
+    sentMessages: Prisma.$MessagePayload<ExtArgs>[]
+    receivedMessages: Prisma.$MessagePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1133,9 +1133,9 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  claims<T extends Prisma.User$claimsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$claimsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ClaimPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   tasks<T extends Prisma.User$tasksArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$tasksArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaskPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  messages<T extends Prisma.User$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  sentMessages<T extends Prisma.User$sentMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sentMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  receivedMessages<T extends Prisma.User$receivedMessagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$receivedMessagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1565,30 +1565,6 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
- * User.claims
- */
-export type User$claimsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Claim
-   */
-  select?: Prisma.ClaimSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Claim
-   */
-  omit?: Prisma.ClaimOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ClaimInclude<ExtArgs> | null
-  where?: Prisma.ClaimWhereInput
-  orderBy?: Prisma.ClaimOrderByWithRelationInput | Prisma.ClaimOrderByWithRelationInput[]
-  cursor?: Prisma.ClaimWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.ClaimScalarFieldEnum | Prisma.ClaimScalarFieldEnum[]
-}
-
-/**
  * User.tasks
  */
 export type User$tasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1613,9 +1589,33 @@ export type User$tasksArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs
 }
 
 /**
- * User.messages
+ * User.sentMessages
  */
-export type User$messagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$sentMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Message
+   */
+  select?: Prisma.MessageSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Message
+   */
+  omit?: Prisma.MessageOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.MessageInclude<ExtArgs> | null
+  where?: Prisma.MessageWhereInput
+  orderBy?: Prisma.MessageOrderByWithRelationInput | Prisma.MessageOrderByWithRelationInput[]
+  cursor?: Prisma.MessageWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.MessageScalarFieldEnum | Prisma.MessageScalarFieldEnum[]
+}
+
+/**
+ * User.receivedMessages
+ */
+export type User$receivedMessagesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the Message
    */

@@ -1,9 +1,10 @@
 {
   "devDependencies": {
-    "concurrently": "^9.2.1"
+    "concurrently": "^9.2.1",
+    "wait-on": "^9.0.5"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently --names \"server,client\" \"npm run dev --prefix server\" \"npm run dev --prefix client\""
+    "dev": "concurrently --names \"server,client\" --kill-others \"npm run dev --prefix server\" \"wait-on tcp:3000 && npm run dev --prefix client\""
   }
 }

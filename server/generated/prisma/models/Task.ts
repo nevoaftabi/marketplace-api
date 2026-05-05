@@ -216,7 +216,6 @@ export type TaskWhereInput = {
   title?: Prisma.StringFilter<"Task"> | string
   pay?: Prisma.DecimalFilter<"Task"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: Prisma.StringFilter<"Task"> | string
-  claim?: Prisma.XOR<Prisma.ClaimNullableScalarRelationFilter, Prisma.ClaimWhereInput> | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   messages?: Prisma.MessageListRelationFilter
 }
@@ -227,7 +226,6 @@ export type TaskOrderByWithRelationInput = {
   title?: Prisma.SortOrder
   pay?: Prisma.SortOrder
   description?: Prisma.SortOrder
-  claim?: Prisma.ClaimOrderByWithRelationInput
   user?: Prisma.UserOrderByWithRelationInput
   messages?: Prisma.MessageOrderByRelationAggregateInput
 }
@@ -241,7 +239,6 @@ export type TaskWhereUniqueInput = Prisma.AtLeast<{
   title?: Prisma.StringFilter<"Task"> | string
   pay?: Prisma.DecimalFilter<"Task"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: Prisma.StringFilter<"Task"> | string
-  claim?: Prisma.XOR<Prisma.ClaimNullableScalarRelationFilter, Prisma.ClaimWhereInput> | null
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   messages?: Prisma.MessageListRelationFilter
 }, "id">
@@ -275,7 +272,6 @@ export type TaskCreateInput = {
   title: string
   pay: runtime.Decimal | runtime.DecimalJsLike | number | string
   description: string
-  claim?: Prisma.ClaimCreateNestedOneWithoutTaskInput
   user: Prisma.UserCreateNestedOneWithoutTasksInput
   messages?: Prisma.MessageCreateNestedManyWithoutTaskInput
 }
@@ -286,7 +282,6 @@ export type TaskUncheckedCreateInput = {
   title: string
   pay: runtime.Decimal | runtime.DecimalJsLike | number | string
   description: string
-  claim?: Prisma.ClaimUncheckedCreateNestedOneWithoutTaskInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutTaskInput
 }
 
@@ -295,7 +290,6 @@ export type TaskUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   pay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  claim?: Prisma.ClaimUpdateOneWithoutTaskNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutTasksNestedInput
   messages?: Prisma.MessageUpdateManyWithoutTaskNestedInput
 }
@@ -306,7 +300,6 @@ export type TaskUncheckedUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   pay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  claim?: Prisma.ClaimUncheckedUpdateOneWithoutTaskNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutTaskNestedInput
 }
 
@@ -422,20 +415,6 @@ export type TaskUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.TaskScalarWhereInput | Prisma.TaskScalarWhereInput[]
 }
 
-export type TaskCreateNestedOneWithoutClaimInput = {
-  create?: Prisma.XOR<Prisma.TaskCreateWithoutClaimInput, Prisma.TaskUncheckedCreateWithoutClaimInput>
-  connectOrCreate?: Prisma.TaskCreateOrConnectWithoutClaimInput
-  connect?: Prisma.TaskWhereUniqueInput
-}
-
-export type TaskUpdateOneRequiredWithoutClaimNestedInput = {
-  create?: Prisma.XOR<Prisma.TaskCreateWithoutClaimInput, Prisma.TaskUncheckedCreateWithoutClaimInput>
-  connectOrCreate?: Prisma.TaskCreateOrConnectWithoutClaimInput
-  upsert?: Prisma.TaskUpsertWithoutClaimInput
-  connect?: Prisma.TaskWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.TaskUpdateToOneWithWhereWithoutClaimInput, Prisma.TaskUpdateWithoutClaimInput>, Prisma.TaskUncheckedUpdateWithoutClaimInput>
-}
-
 export type TaskCreateNestedOneWithoutMessagesInput = {
   create?: Prisma.XOR<Prisma.TaskCreateWithoutMessagesInput, Prisma.TaskUncheckedCreateWithoutMessagesInput>
   connectOrCreate?: Prisma.TaskCreateOrConnectWithoutMessagesInput
@@ -463,7 +442,6 @@ export type TaskCreateWithoutUserInput = {
   title: string
   pay: runtime.Decimal | runtime.DecimalJsLike | number | string
   description: string
-  claim?: Prisma.ClaimCreateNestedOneWithoutTaskInput
   messages?: Prisma.MessageCreateNestedManyWithoutTaskInput
 }
 
@@ -472,7 +450,6 @@ export type TaskUncheckedCreateWithoutUserInput = {
   title: string
   pay: runtime.Decimal | runtime.DecimalJsLike | number | string
   description: string
-  claim?: Prisma.ClaimUncheckedCreateNestedOneWithoutTaskInput
   messages?: Prisma.MessageUncheckedCreateNestedManyWithoutTaskInput
 }
 
@@ -513,64 +490,11 @@ export type TaskScalarWhereInput = {
   description?: Prisma.StringFilter<"Task"> | string
 }
 
-export type TaskCreateWithoutClaimInput = {
-  id?: string
-  title: string
-  pay: runtime.Decimal | runtime.DecimalJsLike | number | string
-  description: string
-  user: Prisma.UserCreateNestedOneWithoutTasksInput
-  messages?: Prisma.MessageCreateNestedManyWithoutTaskInput
-}
-
-export type TaskUncheckedCreateWithoutClaimInput = {
-  id?: string
-  userId: string
-  title: string
-  pay: runtime.Decimal | runtime.DecimalJsLike | number | string
-  description: string
-  messages?: Prisma.MessageUncheckedCreateNestedManyWithoutTaskInput
-}
-
-export type TaskCreateOrConnectWithoutClaimInput = {
-  where: Prisma.TaskWhereUniqueInput
-  create: Prisma.XOR<Prisma.TaskCreateWithoutClaimInput, Prisma.TaskUncheckedCreateWithoutClaimInput>
-}
-
-export type TaskUpsertWithoutClaimInput = {
-  update: Prisma.XOR<Prisma.TaskUpdateWithoutClaimInput, Prisma.TaskUncheckedUpdateWithoutClaimInput>
-  create: Prisma.XOR<Prisma.TaskCreateWithoutClaimInput, Prisma.TaskUncheckedCreateWithoutClaimInput>
-  where?: Prisma.TaskWhereInput
-}
-
-export type TaskUpdateToOneWithWhereWithoutClaimInput = {
-  where?: Prisma.TaskWhereInput
-  data: Prisma.XOR<Prisma.TaskUpdateWithoutClaimInput, Prisma.TaskUncheckedUpdateWithoutClaimInput>
-}
-
-export type TaskUpdateWithoutClaimInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  pay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  user?: Prisma.UserUpdateOneRequiredWithoutTasksNestedInput
-  messages?: Prisma.MessageUpdateManyWithoutTaskNestedInput
-}
-
-export type TaskUncheckedUpdateWithoutClaimInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
-  title?: Prisma.StringFieldUpdateOperationsInput | string
-  pay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  description?: Prisma.StringFieldUpdateOperationsInput | string
-  messages?: Prisma.MessageUncheckedUpdateManyWithoutTaskNestedInput
-}
-
 export type TaskCreateWithoutMessagesInput = {
   id?: string
   title: string
   pay: runtime.Decimal | runtime.DecimalJsLike | number | string
   description: string
-  claim?: Prisma.ClaimCreateNestedOneWithoutTaskInput
   user: Prisma.UserCreateNestedOneWithoutTasksInput
 }
 
@@ -580,7 +504,6 @@ export type TaskUncheckedCreateWithoutMessagesInput = {
   title: string
   pay: runtime.Decimal | runtime.DecimalJsLike | number | string
   description: string
-  claim?: Prisma.ClaimUncheckedCreateNestedOneWithoutTaskInput
 }
 
 export type TaskCreateOrConnectWithoutMessagesInput = {
@@ -604,7 +527,6 @@ export type TaskUpdateWithoutMessagesInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   pay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  claim?: Prisma.ClaimUpdateOneWithoutTaskNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutTasksNestedInput
 }
 
@@ -614,7 +536,6 @@ export type TaskUncheckedUpdateWithoutMessagesInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   pay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  claim?: Prisma.ClaimUncheckedUpdateOneWithoutTaskNestedInput
 }
 
 export type TaskCreateManyUserInput = {
@@ -629,7 +550,6 @@ export type TaskUpdateWithoutUserInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   pay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  claim?: Prisma.ClaimUpdateOneWithoutTaskNestedInput
   messages?: Prisma.MessageUpdateManyWithoutTaskNestedInput
 }
 
@@ -638,7 +558,6 @@ export type TaskUncheckedUpdateWithoutUserInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   pay?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   description?: Prisma.StringFieldUpdateOperationsInput | string
-  claim?: Prisma.ClaimUncheckedUpdateOneWithoutTaskNestedInput
   messages?: Prisma.MessageUncheckedUpdateManyWithoutTaskNestedInput
 }
 
@@ -686,7 +605,6 @@ export type TaskSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   title?: boolean
   pay?: boolean
   description?: boolean
-  claim?: boolean | Prisma.Task$claimArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   messages?: boolean | Prisma.Task$messagesArgs<ExtArgs>
   _count?: boolean | Prisma.TaskCountOutputTypeDefaultArgs<ExtArgs>
@@ -720,7 +638,6 @@ export type TaskSelectScalar = {
 
 export type TaskOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "title" | "pay" | "description", ExtArgs["result"]["task"]>
 export type TaskInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  claim?: boolean | Prisma.Task$claimArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   messages?: boolean | Prisma.Task$messagesArgs<ExtArgs>
   _count?: boolean | Prisma.TaskCountOutputTypeDefaultArgs<ExtArgs>
@@ -735,7 +652,6 @@ export type TaskIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $TaskPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Task"
   objects: {
-    claim: Prisma.$ClaimPayload<ExtArgs> | null
     user: Prisma.$UserPayload<ExtArgs>
     messages: Prisma.$MessagePayload<ExtArgs>[]
   }
@@ -1139,7 +1055,6 @@ readonly fields: TaskFieldRefs;
  */
 export interface Prisma__TaskClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  claim<T extends Prisma.Task$claimArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Task$claimArgs<ExtArgs>>): Prisma.Prisma__ClaimClient<runtime.Types.Result.GetResult<Prisma.$ClaimPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   messages<T extends Prisma.Task$messagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Task$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1574,25 +1489,6 @@ export type TaskDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Tasks to delete.
    */
   limit?: number
-}
-
-/**
- * Task.claim
- */
-export type Task$claimArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Claim
-   */
-  select?: Prisma.ClaimSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Claim
-   */
-  omit?: Prisma.ClaimOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ClaimInclude<ExtArgs> | null
-  where?: Prisma.ClaimWhereInput
 }
 
 /**

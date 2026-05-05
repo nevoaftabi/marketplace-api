@@ -4,14 +4,7 @@ import { apiFetch } from "../utils/api";
 import { useAuth } from "../context/useAuth";
 import { jwtDecode } from "jwt-decode";
 import { setToken } from "../utils/api";
-
-type Task = {
-  id: string;
-  title: string;
-  description: string;
-  pay: number;
-  username: string;
-};
+import type { Task } from "./TaskDetail";
 
 function Home() {
   const { accessToken, setAccessToken } = useAuth();
@@ -33,24 +26,6 @@ function Home() {
     limit: 5,
   });
 
-  useEffect(() => {
-    const refreshToken = localStorage.getItem("refreshToken");
-    if (!refreshToken) return;
-
-    fetch("/api/auth/refresh", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refreshToken }),
-    })
-      .then((res) => (res.ok ? res.json() : Promise.reject()))
-      .then(({ accessToken }) => {
-        setAccessToken(accessToken);
-        setToken(accessToken);
-      })
-      .catch(() => {
-        localStorage.removeItem("refreshToken");
-      });
-  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -67,7 +42,6 @@ function Home() {
 
         // parses data from the request
         const json = await res.json();
-        console.log(json);
         setApiData((prev) => ({ ...prev, ...json }));
       } catch {
         setErrors({
@@ -78,34 +52,12 @@ function Home() {
     fetchData();
   }, [accessToken, apiData.limit, apiData.page]);
 
-  const handleClaim = async (taskId: string) => {
+  const handleMessageOwner = async (taskId: string) => {
     if (!accessToken) {
       navigate("/login");
       return;
     }
-
-    try {
-      const res = await apiFetch(`/api/auth/tasks/${taskId}/claim`, {
-        method: "POST",
-      });
-
-      if (!res.ok) {
-        setErrors({
-          general: ["Couldn't retrieve tasks. Try again later."],
-        });
-        return;
-      }
-
-      const updatedRes = await apiFetch(
-        `/api/tasks?page=${apiData.page}&limit=${apiData.limit}`,
-      );
-      const json = await updatedRes.json();
-      setApiData((prev) => ({ ...prev, ...json }));
-    } catch {
-      setErrors({
-        general: ["Couldn't retrieve tasks. Try again later."],
-      });
-    }
+    navigate(`/tasks/${taskId}`);
   };
 
   const handleLogout = () => {
@@ -137,7 +89,7 @@ function Home() {
           <p>Description: {task.description}</p>
           <p>Pay: ${task.pay}</p>
           <p>Posted by: {task.username}</p>
-          <button onClick={() => handleClaim(task.id)}>
+          <button onClick={() => handleMessageOwner(task.id)}>
             Message owner
           </button>
           <br />

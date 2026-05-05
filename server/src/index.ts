@@ -104,8 +104,9 @@ wss.on("connection", (ws) => {
       await prisma.message.create({
         data: {
           senderId: userId,
-          taskId: msg.taskId,
-          content: msg.content,
+          recipientId: result.data.recipientId,
+          taskId: result.data.taskId,
+          content: result.data.content,
         },
       });
 
@@ -116,8 +117,8 @@ wss.on("connection", (ws) => {
           JSON.stringify({
             type: "message",
             senderId: userId,
-            content: msg.content,
-            taskId: msg.taskId,
+            content: result.data.content,
+            taskId: result.data.taskId,
           }),
         );
       }
@@ -255,8 +256,7 @@ app.post("/login", async (req: Request, res: Response) => {
 
     return res.status(200).json({ accessToken, refreshToken });
   } catch (e) {
-    if (e instanceof ZodError)
-      return res.status(400).json(e.flatten().fieldErrors);
+    if (e instanceof ZodError) return res.status(400).json(e.flatten().fieldErrors);
     return res.sendStatus(500);
   }
 });
@@ -311,6 +311,7 @@ app.get("/tasks/:id", async (req: Request, res: Response) => {
   try {
     const parsed = parseOrThrow(GetTaskParams, req.params);
     const task = await prisma.task.findUnique({ where: { id: parsed.id } });
+    if(!task) return res.sendStatus(404);
     return res.status(200).json(task);
   } catch (error) {
     if (error instanceof ZodError) return res.sendStatus(400);

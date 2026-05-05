@@ -80,12 +80,12 @@ export type PrismaVersion = {
 }
 
 /**
- * Prisma Client JS version: 7.7.0
- * Query Engine version: 75cbdc1eb7150937890ad5465d861175c6624711
+ * Prisma Client JS version: 7.8.0
+ * Query Engine version: 3c6e192761c0362d496ed980de936e2f3cebcd3a
  */
 export const prismaVersion: PrismaVersion = {
-  client: "7.7.0",
-  engine: "75cbdc1eb7150937890ad5465d861175c6624711"
+  client: "7.8.0",
+  engine: "3c6e192761c0362d496ed980de936e2f3cebcd3a"
 }
 
 /**
@@ -385,7 +385,6 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   User: 'User',
-  Claim: 'Claim',
   Message: 'Message',
   Task: 'Task'
 } as const
@@ -403,7 +402,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "claim" | "message" | "task"
+    modelProps: "user" | "message" | "task"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -478,80 +477,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.UserCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number
-        }
-      }
-    }
-    Claim: {
-      payload: Prisma.$ClaimPayload<ExtArgs>
-      fields: Prisma.ClaimFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.ClaimFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClaimPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.ClaimFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClaimPayload>
-        }
-        findFirst: {
-          args: Prisma.ClaimFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClaimPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.ClaimFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClaimPayload>
-        }
-        findMany: {
-          args: Prisma.ClaimFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClaimPayload>[]
-        }
-        create: {
-          args: Prisma.ClaimCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClaimPayload>
-        }
-        createMany: {
-          args: Prisma.ClaimCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.ClaimCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClaimPayload>[]
-        }
-        delete: {
-          args: Prisma.ClaimDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClaimPayload>
-        }
-        update: {
-          args: Prisma.ClaimUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClaimPayload>
-        }
-        deleteMany: {
-          args: Prisma.ClaimDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.ClaimUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.ClaimUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClaimPayload>[]
-        }
-        upsert: {
-          args: Prisma.ClaimUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$ClaimPayload>
-        }
-        aggregate: {
-          args: Prisma.ClaimAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateClaim>
-        }
-        groupBy: {
-          args: Prisma.ClaimGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ClaimGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.ClaimCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.ClaimCountAggregateOutputType> | number
         }
       }
     }
@@ -755,19 +680,10 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
-export const ClaimScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  taskId: 'taskId',
-  accepted: 'accepted'
-} as const
-
-export type ClaimScalarFieldEnum = (typeof ClaimScalarFieldEnum)[keyof typeof ClaimScalarFieldEnum]
-
-
 export const MessageScalarFieldEnum = {
   id: 'id',
   senderId: 'senderId',
+  recipientId: 'recipientId',
   taskId: 'taskId',
   content: 'content',
   createdAt: 'createdAt'
@@ -842,13 +758,6 @@ export type EnumPlanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
  * Reference to a field of type 'Plan[]'
  */
 export type ListEnumPlanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Plan[]'>
-    
-
-
-/**
- * Reference to a field of type 'Boolean'
- */
-export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -986,10 +895,24 @@ export type PrismaClientOptions = ({
    * ```
    */
   comments?: runtime.SqlCommenterPlugin[]
+  /**
+   * Optional maximum size for the query plan cache. If not provided, a default size will be used.
+   * A value of `0` can be used to disable the cache entirely. A higher cache size can improve
+   * performance for applications that execute a large number of unique queries, while a smaller
+   * cache size can reduce memory usage.
+   * 
+   * @example
+   * ```
+   * const prisma = new PrismaClient({
+   *   adapter,
+   *   queryPlanCacheMaxSize: 100,
+   * })
+   * ```
+   */
+  queryPlanCacheMaxSize?: number
 }
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
-  claim?: Prisma.ClaimOmit
   message?: Prisma.MessageOmit
   task?: Prisma.TaskOmit
 }

@@ -27,17 +27,20 @@ model User {
   refreshToken String?
   stripeCustomerId String?
   plan Plan @default(free) 
-  messages Message[]
+  sentMessages Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
 }
 
 model Message {
   id String @id @default(uuid())
   senderId String
+  recipientId String
   taskId String
   content String
   createdAt DateTime @default(now())
 
-  sender User @relation(fields: [senderId], references: [id])
+  sender User @relation("SentMessages", fields: [senderId], references: [id])
+  recipient User @relation("ReceivedMessages", fields: [recipientId], references: [id])
   task Task @relation(fields: [taskId], references: [id])
 }
 

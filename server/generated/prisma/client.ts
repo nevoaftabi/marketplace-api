@@ -47,11 +47,6 @@ export { Prisma }
  */
 export type User = Prisma.UserModel
 /**
- * Model Claim
- * 
- */
-export type Claim = Prisma.ClaimModel
-/**
  * Model Message
  * 
  */
